@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.vsantos1.exception.ResourceNotFoundException;
 import com.vsantos1.model.Category;
 import com.vsantos1.repository.CategoryRepository;
 
@@ -40,7 +41,7 @@ public class CategoryResource {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
 
         if(optionalCategory.isEmpty()){
-            throw new RuntimeException("No records found for this ID");
+            throw new ResourceNotFoundException("No records found for this ID");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(optionalCategory.get());
