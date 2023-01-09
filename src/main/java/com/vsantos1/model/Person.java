@@ -1,5 +1,6 @@
 package com.vsantos1.model;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +19,8 @@ public class Person {
 
     private Boolean active;
 
+    @Embedded
+    private Address address;
 
     public Person(){}
 
@@ -49,6 +52,16 @@ public class Person {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+
+    public Address getAddress() {
+        return address;
+    }
+
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     
