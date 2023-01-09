@@ -1,0 +1,5 @@
+CREATE TABLE tb_persons(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    active BOOLEAN DEFAULT TRUE   
+);
