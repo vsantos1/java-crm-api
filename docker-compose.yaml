@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_USER: postgres
+      POSTGRES_DB: crm
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
