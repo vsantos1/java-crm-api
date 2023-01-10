@@ -1,11 +1,11 @@
 package com.vsantos1.resource;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.vsantos1.event.CreatedResourceEvent;
 import com.vsantos1.exception.ResourceNotFoundException;
 import com.vsantos1.model.Category;
 import com.vsantos1.repository.CategoryRepository;
@@ -26,10 +26,13 @@ public class CategoryResource {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryResource(CategoryRepository categoryRepository) {
+    private final ApplicationEventPublisher publisher;
+    
+   
+    public CategoryResource(CategoryRepository categoryRepository, ApplicationEventPublisher publisher) {
         this.categoryRepository = categoryRepository;
+        this.publisher = publisher;
     }
-
 
     @GetMapping(value = "/categories")
     public ResponseEntity<List<Category>> getAllCategories(){
@@ -51,10 +54,8 @@ public class CategoryResource {
     public ResponseEntity<Category> createCategory(@RequestBody Category category,HttpServletResponse response){
         Category entity = categoryRepository.save(category);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/{category_id}")
-        .buildAndExpand(entity.getId()).toUri();
+        publisher.publishEvent(new CreatedResourceEvent(entity, response, entity.getId()));
 
-        response.setHeader("Location",uri.toASCIIString());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }

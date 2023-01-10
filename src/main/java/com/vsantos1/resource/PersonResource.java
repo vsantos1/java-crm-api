@@ -1,5 +1,6 @@
 package com.vsantos1.resource;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,12 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vsantos1.event.CreatedResourceEvent;
 import com.vsantos1.exception.ResourceNotFoundException;
 import com.vsantos1.model.Person;
 import com.vsantos1.repository.PersonRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +27,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class PersonResource {
 
     private final PersonRepository personRepository;
+    
+    private final ApplicationEventPublisher publisher;
 
-    public PersonResource(PersonRepository personRepository) {
+  
+
+    public PersonResource(PersonRepository personRepository, ApplicationEventPublisher publisher) {
         this.personRepository = personRepository;
+        this.publisher = publisher;
     }
 
     @GetMapping(value = "/persons")
@@ -45,10 +54,11 @@ public class PersonResource {
     }
 
     @PostMapping(value = "/persons", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+    public ResponseEntity<Person> createPerson(@RequestBody Person person, HttpServletResponse response) {
 
         Person entity = personRepository.save(person);
-
+        publisher.publishEvent(new CreatedResourceEvent(entity, response, entity.getId()));
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
