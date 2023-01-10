@@ -11,7 +11,7 @@ public class Address {
     private String district;
     private String city;
     private String state;
-    private String cep;
+    private String zipCode;
 
 
     public String getStreet() {
@@ -62,13 +62,11 @@ public class Address {
         this.state = state;
     }
 
-    public String getCep() {
-        return cep;
+    public String getZipCode() {
+        return zipCode;
     }
 
-    public void setCep(String cep) {
-        this.cep = cep;
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
-
-    
 }
