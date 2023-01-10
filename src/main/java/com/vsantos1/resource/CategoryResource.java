@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import com.vsantos1.event.CreatedResourceEvent;
 import com.vsantos1.exception.ResourceNotFoundException;
 import com.vsantos1.model.Category;
 import com.vsantos1.repository.CategoryRepository;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping(value = "/api/v1")
@@ -28,23 +30,22 @@ public class CategoryResource {
     private final CategoryRepository categoryRepository;
 
     private final ApplicationEventPublisher publisher;
-    
-   
+
     public CategoryResource(CategoryRepository categoryRepository, ApplicationEventPublisher publisher) {
         this.categoryRepository = categoryRepository;
         this.publisher = publisher;
     }
 
     @GetMapping(value = "/categories")
-    public ResponseEntity<List<Category>> getAllCategories(){
+    public ResponseEntity<List<Category>> getAllCategories() {
         return ResponseEntity.status(HttpStatus.OK).body(categoryRepository.findAll());
     }
 
     @GetMapping(value = "/categories/{category_id}")
-    public ResponseEntity<Category> getCategory(@PathVariable("category_id") Long id){
+    public ResponseEntity<Category> getCategory(@PathVariable("category_id") Long id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
 
-        if(optionalCategory.isEmpty()){
+        if (optionalCategory.isEmpty()) {
             throw new ResourceNotFoundException("No records found for this ID");
         }
 
@@ -52,17 +53,27 @@ public class CategoryResource {
     }
 
     @PostMapping(value = "/categories")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category,HttpServletResponse response){
+    public ResponseEntity<Category> create(@RequestBody Category category, HttpServletResponse response) {
         Category entity = categoryRepository.save(category);
 
         publisher.publishEvent(new CreatedResourceEvent(entity, response, entity.getId()));
 
-
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
+    @PutMapping(value = "/categories/{category_id}")
+    public ResponseEntity<Category> update(@PathVariable("category_id") Long id, @RequestBody Category category) {
+        Optional<Category> optionalCategory = categoryRepository.findById(id);
+
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("No records found for this ID");
+        }
+        BeanUtils.copyProperties(category, optionalCategory);
+        return ResponseEntity.status(HttpStatus.OK).body(categoryRepository.save(category));
+    }
+
     @DeleteMapping(value = "/categories/{category_id}")
-    public ResponseEntity<?> deletePerson(@PathVariable("category_id") Long id){
+    public ResponseEntity<?> deletePerson(@PathVariable("category_id") Long id) {
         categoryRepository.deleteById(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

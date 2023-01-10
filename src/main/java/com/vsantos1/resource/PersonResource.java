@@ -1,5 +1,6 @@
 package com.vsantos1.resource;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -28,10 +30,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class PersonResource {
 
     private final PersonRepository personRepository;
-    
-    private final ApplicationEventPublisher publisher;
 
-  
+    private final ApplicationEventPublisher publisher;
 
     public PersonResource(PersonRepository personRepository, ApplicationEventPublisher publisher) {
         this.personRepository = personRepository;
@@ -55,17 +55,28 @@ public class PersonResource {
     }
 
     @PostMapping(value = "/persons", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Person> createPerson(@RequestBody Person person, HttpServletResponse response) {
+    public ResponseEntity<Person> create(@RequestBody Person person, HttpServletResponse response) {
 
         Person entity = personRepository.save(person);
         publisher.publishEvent(new CreatedResourceEvent(entity, response, entity.getId()));
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
+    @PutMapping(value = "/persons/{person_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Person> update(@PathVariable("person_id") Long id, @RequestBody Person person) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (optionalPerson.isEmpty()) {
+            throw new ResourceNotFoundException("No records found for this ID");
+        }
+        BeanUtils.copyProperties(person, optionalPerson.get(), "id");
+
+        return ResponseEntity.status(HttpStatus.OK).body(personRepository.save(optionalPerson.get()));
+
+    }
 
     @DeleteMapping(value = "/persons/{person_id}")
-    public ResponseEntity<?> deletePerson(@PathVariable("person_id") Long id){
+    public ResponseEntity<?> deletePerson(@PathVariable("person_id") Long id) {
         personRepository.deleteById(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
