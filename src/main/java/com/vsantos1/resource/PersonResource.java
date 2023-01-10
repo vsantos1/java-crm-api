@@ -1,6 +1,5 @@
 package com.vsantos1.resource;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +14,7 @@ import com.vsantos1.event.CreatedResourceEvent;
 import com.vsantos1.exception.ResourceNotFoundException;
 import com.vsantos1.model.Person;
 import com.vsantos1.repository.PersonRepository;
+import com.vsantos1.service.PersonService;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +33,15 @@ public class PersonResource {
 
     private final ApplicationEventPublisher publisher;
 
-    public PersonResource(PersonRepository personRepository, ApplicationEventPublisher publisher) {
+    private final PersonService personService;
+
+    
+
+    public PersonResource(PersonRepository personRepository, ApplicationEventPublisher publisher,
+            PersonService personService) {
         this.personRepository = personRepository;
         this.publisher = publisher;
+        this.personService = personService;
     }
 
     @GetMapping(value = "/persons")
@@ -65,13 +71,9 @@ public class PersonResource {
 
     @PutMapping(value = "/persons/{person_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> update(@PathVariable("person_id") Long id, @RequestBody Person person) {
-        Optional<Person> optionalPerson = personRepository.findById(id);
-        if (optionalPerson.isEmpty()) {
-            throw new ResourceNotFoundException("No records found for this ID");
-        }
-        BeanUtils.copyProperties(person, optionalPerson.get(), "id");
+       
 
-        return ResponseEntity.status(HttpStatus.OK).body(personRepository.save(optionalPerson.get()));
+        return ResponseEntity.status(HttpStatus.OK).body(personService.update(id,person));
 
     }
 
