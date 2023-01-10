@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,8 @@ import com.vsantos1.event.CreatedResourceEvent;
 import com.vsantos1.exception.ResourceNotFoundException;
 import com.vsantos1.model.Category;
 import com.vsantos1.repository.CategoryRepository;
+import com.vsantos1.service.CategoryService;
+
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
@@ -31,9 +32,14 @@ public class CategoryResource {
 
     private final ApplicationEventPublisher publisher;
 
-    public CategoryResource(CategoryRepository categoryRepository, ApplicationEventPublisher publisher) {
+    private final CategoryService categoryService;
+
+
+    public CategoryResource(CategoryRepository categoryRepository, ApplicationEventPublisher publisher,
+            CategoryService categoryService) {
         this.categoryRepository = categoryRepository;
         this.publisher = publisher;
+        this.categoryService = categoryService;
     }
 
     @GetMapping(value = "/categories")
@@ -63,13 +69,8 @@ public class CategoryResource {
 
     @PutMapping(value = "/categories/{category_id}")
     public ResponseEntity<Category> update(@PathVariable("category_id") Long id, @RequestBody Category category) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
-
-        if (optionalCategory.isEmpty()) {
-            throw new ResourceNotFoundException("No records found for this ID");
-        }
-        BeanUtils.copyProperties(category, optionalCategory);
-        return ResponseEntity.status(HttpStatus.OK).body(categoryRepository.save(category));
+       
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.update(id,category));
     }
 
     @DeleteMapping(value = "/categories/{category_id}")
