@@ -9,6 +9,7 @@ import com.vsantos1.repository.PaymentRepository;
 import com.vsantos1.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,9 @@ public class PaymentService {
         this.personRepository = personRepository;
     }
 
+    public List<Payment> findAll(){
+        return paymentRepository.findAll();
+    }
     public Payment execute(Payment payment) {
         Optional<Category> optionalCategory = categoryRepository.findById(payment.getCategory().getId());
         Optional<Person> optionalPerson = personRepository.findById(payment.getPerson().getId());
