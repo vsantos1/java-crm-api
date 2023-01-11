@@ -1,12 +1,12 @@
 CREATE TABLE tb_payments(
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     description VARCHAR(255),
     due_date DATE NOT NULL,
     payment_date DATE,
     value DECIMAL(10,2) NOT NULL,
     type VARCHAR(255) NOT NULL,
-    person_id INTEGER NOT NULL,
-    category_id INTEGER NOT NULL,
+    person_id SERIAL NOT NULL,
+    category_id SERIAL NOT NULL,
     FOREIGN KEY (person_id) REFERENCES tb_persons(id),
     FOREIGN KEY (category_id) REFERENCES tb_persons(id)
 
