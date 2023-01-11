@@ -13,6 +13,6 @@ CREATE TABLE tb_payments(
 
 );
 
-INSERT INTO tb_payments (description, due_date, payment_date, value, type, person_id, category_id) VALUES ('Conta de Luz', '2021-01-10', '2021-01-10', 100.00, 'RECEITA', 1, 1);
-INSERT INTO tb_payments (description, due_date, payment_date, value, type, person_id, category_id) VALUES ('Conta de Água', '2021-01-10', '2021-01-10', 100.00, 'RECEITA', 1, 1);
-INSERT INTO tb_payments (description, due_date, payment_date, value, type, person_id, category_id) VALUES ('Conta de Telefone', '2021-01-10', '2021-01-10', 100.00, 'RECEITA', 1, 1);
+INSERT INTO tb_payments (description, due_date, payment_date, value, type, person_id, category_id) VALUES ('Conta de Luz', '2021-01-10', '2021-01-10', 100.00, 'RECEIPT', 1, 1);
+INSERT INTO tb_payments (description, due_date, payment_date, value, type, person_id, category_id) VALUES ('Conta de Água', '2021-01-10', '2021-01-10', 100.00, 'INVOICE', 1, 1);
+INSERT INTO tb_payments (description, due_date, payment_date, value, type, person_id, category_id) VALUES ('Conta de Telefone', '2021-01-10', '2021-01-10', 100.00, 'EXPENSE', 1, 1);

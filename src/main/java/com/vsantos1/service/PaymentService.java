@@ -61,6 +61,8 @@ public class PaymentService {
         if (optionalPayment.isEmpty()) {
             throw new ResourceNotFoundException("No records found for this ID");
         }
+        payment.setCategory(optionalPayment.get().getCategory());
+        payment.setPerson(optionalPayment.get().getPerson());
         BeanUtils.copyProperties(payment, optionalPayment.get(), "id");
 
         return paymentRepository.save(optionalPayment.get());
