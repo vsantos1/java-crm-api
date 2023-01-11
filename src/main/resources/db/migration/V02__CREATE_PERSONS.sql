@@ -7,7 +7,7 @@ CREATE TABLE tb_persons(
     city VARCHAR(255) NOT NULL,
     number VARCHAR(255) NOT NULL,
     state VARCHAR(255) NOT NULL,
-    cep VARCHAR(255) NOT NULL,
+    zip_code VARCHAR(255) NOT NULL,
     active BOOLEAN DEFAULT TRUE   
 );
 

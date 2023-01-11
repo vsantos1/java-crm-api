@@ -1,5 +1,6 @@
 package com.vsantos1.model;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -11,6 +12,8 @@ public class Address {
     private String district;
     private String city;
     private String state;
+
+    @Column(name = "zip_code")
     private String zipCode;
 
 
