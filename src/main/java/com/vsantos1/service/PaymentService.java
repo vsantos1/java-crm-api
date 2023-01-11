@@ -7,10 +7,12 @@ import com.vsantos1.model.Person;
 import com.vsantos1.repository.CategoryRepository;
 import com.vsantos1.repository.PaymentRepository;
 import com.vsantos1.repository.PersonRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PaymentService {
@@ -27,9 +29,10 @@ public class PaymentService {
         this.personRepository = personRepository;
     }
 
-    public List<Payment> findAll(){
+    public List<Payment> findAll() {
         return paymentRepository.findAll();
     }
+
     public Payment execute(Payment payment) {
         Optional<Category> optionalCategory = categoryRepository.findById(payment.getCategory().getId());
         Optional<Person> optionalPerson = personRepository.findById(payment.getPerson().getId());
@@ -44,4 +47,27 @@ public class PaymentService {
 
         return paymentRepository.save(payment);
     }
+
+    public Payment findByUUID(UUID id) {
+        Optional<Payment> optionalPayment = paymentRepository.findById(id);
+        if (optionalPayment.isPresent()) {
+            return optionalPayment.get();
+        }
+        throw new ResourceNotFoundException("No records found for this ID");
+    }
+
+    public Payment update(UUID id, Payment payment) {
+        Optional<Payment> optionalPayment = paymentRepository.findById(id);
+        if (optionalPayment.isEmpty()) {
+            throw new ResourceNotFoundException("No records found for this ID");
+        }
+        BeanUtils.copyProperties(payment, optionalPayment.get(), "id");
+
+        return paymentRepository.save(optionalPayment.get());
+    }
+
+    public void deleteByUUID(UUID id) {
+        paymentRepository.deleteById(id);
+    }
+
 }
