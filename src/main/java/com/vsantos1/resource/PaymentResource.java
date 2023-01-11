@@ -3,7 +3,12 @@ package com.vsantos1.resource;
 import com.vsantos1.event.CreatedResourceEvent;
 import com.vsantos1.model.Payment;
 import com.vsantos1.service.PaymentService;
+import com.vsantos1.service.filter.PaymentFilter;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +31,11 @@ public class PaymentResource {
     }
 
     @GetMapping(value = "/payments")
-    public ResponseEntity<List<Payment>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(paymentService.findAll());
+    public ResponseEntity<Page<Payment>> getAllPaginated(@PageableDefault(size = 10, value = 10, page = 0, direction = Sort.Direction.ASC) PaymentFilter paymentFilter, Pageable pageable) {
+
+        System.out.println(paymentFilter);
+        return ResponseEntity.ok(paymentService.findByPaymentFilter(paymentFilter, pageable));
+
     }
 
     @GetMapping(value = "/payments/{payment_id}")
