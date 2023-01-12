@@ -79,3 +79,11 @@ spring.security.user.password=1234
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1b1b1b1b1b1b1b1b1b1b)
 
+
+- Unauthorized request example
+
+<img src="examples/unauth.png" alt="Unauthorized request">
+
+-Authorized request example
+
+<img src="examples/auth.png" alt="Authorized request">
