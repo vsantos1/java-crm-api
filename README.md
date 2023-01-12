@@ -84,6 +84,6 @@ spring.security.user.password=1234
 
 <img src="examples/unauth.png" alt="Unauthorized request">
 
--Authorized request example
+- Authorized request example
 
 <img src="examples/auth.png" alt="Authorized request">
