@@ -61,7 +61,6 @@ public class PaymentService {
     }
 
     public Page<Payment> findByPaymentFilter(PaymentFilter paymentFilter, Pageable pageable) {
-        System.out.println(paymentFilter);
         if(paymentFilter.getDescription() != null){
             return paymentRepository.findPaymentByDescriptionContainingIgnoreCase(paymentFilter.getDescription(), pageable);
         }

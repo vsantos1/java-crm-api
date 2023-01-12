@@ -33,7 +33,6 @@ public class PaymentResource {
     @GetMapping(value = "/payments")
     public ResponseEntity<Page<Payment>> getAllPaginated(@PageableDefault(size = 10, value = 10, page = 0, direction = Sort.Direction.ASC) PaymentFilter paymentFilter, Pageable pageable) {
 
-        System.out.println(paymentFilter);
         return ResponseEntity.ok(paymentService.findByPaymentFilter(paymentFilter, pageable));
 
     }
