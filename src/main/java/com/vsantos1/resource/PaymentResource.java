@@ -43,7 +43,7 @@ public class PaymentResource {
     }
 
     @PostMapping(value = "/payments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Payment> create(@RequestBody Payment payment, HttpServletResponse response) {
+    public ResponseEntity<Payment> create(@RequestBody Payment payment) {
         // TODO : publish event on creation
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.execute(payment));
     }
